@@ -14,8 +14,15 @@ def renderHome():
 @app.route("/admin")
 def renderAdmin():
   doctorDetails = select_all_doctors()
-  print(doctorDetails)
-  return render_template("admin.html", doctorDetails=doctorDetails)
+  patientDetails  = select_all_patient()
+  wardDetails = select_all_wards()
+  print(select_all_patient())
+  return render_template(
+    "admin.html", 
+    doctorDetails=doctorDetails,
+    patientDetails = patientDetails,
+    wardDetails=wardDetails
+  )
 
 @app.route("/create/<table>", methods=['POST'])
 def create(table):
@@ -28,18 +35,18 @@ def create(table):
     doctorType = request.form['form-type-doctor']
     if(doctorID=='' or doctorName=='' or doctorPass=='' or doctorSpecialization=='' or doctorType==''):
       return "Error: Fields cannot be empty"
-    
     insertdoc(doctorID, doctorName, doctorSpecialization, doctorType)
-    print(select_task_by_docid(doctorID))
 
   elif table == 'patient':
     patientID = request.form['form-id-patient']
-    patientPassord = request.form['form-password-patient']
+    patientPassword = request.form['form-password-patient']
     patientName = request.form['form-name-patient']
     patientSex = request.form['form-sex-patient']
     patientAddress = request.form['form-address-patient']
-
+    if(patientID=='' or patientAddress=='' or patientName=='' or patientSex=='' or patientPassword==''):
+          return "Error: Fields cannot be empty"
     insertpat(patientID, patientName, patientAddress, patientSex, '')
+
   elif table=='ward':
     wardID = request.form['form-id-ward']
     wardType = request.form['form-type-ward']

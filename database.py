@@ -16,12 +16,14 @@ def createTable():
           P_SEX VARCHAR (20) NOT NULL,
           P_DETAILS VARCHAR (50));''')
 
+
   conn.execute('''CREATE TABLE MEDICINES
           (M_ID VARCHAR(20) PRIMARY KEY NOT NULL,
     NAME VARCHAR(20) NOT NULL,
           QUANTITY INT NOT NULL,
           PRICE INT NOT NULL
     EXPIRY DATE NOT NULL);''')
+
 
   conn.execute('''CREATE TABLE WARDS
           (W_ID VARCHAR(20) PRIMARY KEY NOT NULL,
@@ -31,7 +33,7 @@ def createTable():
           (W_ID VARCHAR(20),
           P_ID VARCHAR(20),
           DURATION INT NOT NULL,
-    FOREIGN KEY (W_ID) REFERENCES WARDS(W_ID),
+    FOREIGN KEY (W_ID) REFERENCES WARDS(W_ID)
     FOREIGN KEY (P_ID) REFERENCES PATIENT(P_ID));''')
 
   conn.execute('''CREATE TABLE EMPLOYEE
@@ -48,6 +50,8 @@ def createTable():
           DOCTOR VARCHAR (20) NOT NULL,
           FOREIGN KEY (PATIENT) REFERENCES PATIENT(P_ID),
           FOREIGN KEY (DOCTOR) REFERENCES DOCTOR(DOCTORID));''')
+
+
 
 
 def insertdoc(docid,dname,dspl,dtype):
@@ -72,6 +76,7 @@ def insertemp(eid,ename,eaddr,esex,edet):
 def insertrec(rid,app,pat,doc):
     conn.execute("INSERT INTO RECORD VALUES (?,?,?,?)",(rid,app,pat,doc))
     conn.commit()
+
 
 def select_task_by_docid(docid, conn=conn):
   cur = conn.cursor()
@@ -163,4 +168,62 @@ def select_all_record(conn=conn):
   rows = cur.fetchall()
 
   return rows
+
+
+
+
+def select_all_wards(conn=conn):
+    
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Wards")
+ 
+    rows = cur.fetchall()
+ 
+    return rows
+
+def select_all_patwards(conn=conn):
+    
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM PATIENTWARDS")
+ 
+    rows = cur.fetchall()
+ 
+    return rows;
+
+def select_all_patwards1(pidgiven, conn):
+    
+  cur = conn.cursor()
+  cur.execute("SELECT * FROM PATIENT NATURAL JOIN PATIENT WARD WHERE P_ID = ?",(pidgiven))
+
+  rows = cur.fetchall()
+
+  return rows;  
+
+def select_all_patwards2(widgiven, conn=conn):
+    
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM WARDS NATURAL JOIN PATIENT WARD WHERE W_ID = ?",(widgiven))
+ 
+    rows = cur.fetchall()
+ 
+    return rows;
+
+
+def select_all_employee(conn=conn):
+    
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Employee")
+ 
+    rows = cur.fetchall()
+ 
+    return rows
+
+def select_all_record(conn=conn):
+    
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Record")
+ 
+    rows = cur.fetchall()
+ 
+    return rows;
 
