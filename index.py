@@ -13,7 +13,9 @@ def renderHome():
 
 @app.route("/admin")
 def renderAdmin():
-  return render_template("admin.html")
+  doctorDetails = select_all_doctors()
+  print(doctorDetails)
+  return render_template("admin.html", doctorDetails=doctorDetails)
 
 @app.route("/create/<table>", methods=['POST'])
 def create(table):
@@ -29,6 +31,7 @@ def create(table):
     
     insertdoc(doctorID, doctorName, doctorSpecialization, doctorType)
     print(select_task_by_docid(doctorID))
+
   elif table == 'patient':
     patientID = request.form['form-id-patient']
     patientPassord = request.form['form-password-patient']

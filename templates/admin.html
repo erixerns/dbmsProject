@@ -41,8 +41,10 @@
 
 
 
+
   <!-- Inserting Data -->
-  <nav class="container mt-4">
+  <nav class="container mt-2">
+    <div id="error" class="col-12"></div>
     <h3>Insert Data</h3>
     <div class="nav nav-pills" id="nav-tab" role="tablist">
       <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
@@ -135,45 +137,89 @@
       </div>
     </div>
 
-
     <div class="mt-4">
       <h3>Display all data</h3>
       <nav class="container mt-4">
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-            aria-controls="nav-home" aria-selected="true">Doctor</a>
-          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-            aria-controls="nav-profile" aria-selected="false">Patient</a>
-          <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-            aria-controls="nav-contact" aria-selected="false">Warden</a>
-          <a class="nav-item nav-link" id="nav-admin-tab" data-toggle="tab" href="#nav-admin" role="tab" aria-controls="nav-admin"
-            aria-selected="false">Admin</a>
+          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#doctor-table" role="tab">Doctor</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#patient-table" role="tab">Patient</a>
+          <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#wards-table" role="tab">Warden</a>
+          <a class="nav-item nav-link" id="nav-admin-tab" data-toggle="tab" href="#admin-table" role="tab">Admin</a>
         </div>
       </nav>
       <div class="tab-content container" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="tab-pane fade show active" id="doctor-table" role="tabpanel" ]>
           <!-- Doctor Table -->
+          <h3>Doctor</h3>
           <table class="table table-bordered">
-            {{ doctorDetails }}
+            <thead class="table-dark">
+              <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Specialization</td>
+                <td>Type</td>
+              </tr>
+            </thead>
+            {% for i in doctorDetails: %}
+            <tr>
+              <td>{{i[0]}}</td>
+              <td>{{i[1]}}</td>
+              <td>{{i[2]}}</td>
+              <td>{{i[3]}}</td>
+            </tr>
+            {%endfor%}
           </table>
         </div>
 
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-          <!-- Patient Data -->
+        <div class="tab-pane fade" id="patient-table" role="tabpanel">
           <div class="container mt-4">
-
+            <!-- Patients Table -->
+            <h3>Patients</h3>
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <td>ID</td>
+                  <td>Name</td>
+                  <td>Address</td>
+                  <td>Sex</td>
+                </tr>
+              </thead>
+              {% for i in patientDetailss: %}
+              <tr>
+                <td>{{i[0]}}</td>
+                <td>{{i[1]}}</td>
+                <td>{{i[2]}}</td>
+                <td>{{i[3]}}</td>
+              </tr>
+              {%endfor%}
+            </table>
           </div>
         </div>
 
 
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+        <div class="tab-pane fade" id="wards-table" role="tabpanel">
           <!-- Wards Data -->
           <div class="container mt-4">
-
+          
+          <h3>Ward</h3>
+          <table class="table table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <td>ID</td>
+                <td>Type</td>
+              </tr>
+            </thead>
+            {% for i in wardDetails: %}
+            <tr>
+              <td>{{i[0]}}</td>
+              <td>{{i[1]}}</td>
+            </tr>
+            {%endfor%}
+          </table>
           </div>
         </div>
 
-        <div class="tab-pane fade" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
+        <div class="tab-pane fade" id="admin-table" role="tabpanel">
           <!-- Admin Data -->
           <div class="container mt-4">
 
@@ -184,16 +230,28 @@
   </div>
 
   <script>
-    function create(table) {
-      console.log(table);
+    function handleData(data) {
+      if (/ERROR/i.exec(data)) {
+        console.log(data);
+        var innerHTML =
+          `
+        <div class="alert alert-danger alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          ` +
+          data + `
+        </div>
+        `;
+        document.getElementById('error').innerHTML = innerHTML;
+      } else {
+        window.location.reload()
+      }
+    }
 
-      console.log('submit');
+    function create(table) {
       $("#form-" + table).ajaxSubmit({
         url: '/create/' + table,
         type: 'post',
-        success: function (data) {
-          console.log(data);
-        }
+        success: handleData
       });
 
     }
